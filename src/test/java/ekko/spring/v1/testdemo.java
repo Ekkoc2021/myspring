@@ -1,4 +1,4 @@
-package ekko.spring.v1.test;
+package ekko.spring.v1;
 
 import ekko.spring.v1.core.Annotation.Component;
 import org.junit.jupiter.api.Test;

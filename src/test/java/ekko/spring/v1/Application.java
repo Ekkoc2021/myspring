@@ -1,12 +1,12 @@
-package ekko.spring.v1.test;
+package ekko.spring.v1;
 
 import ekko.spring.v1.core.Annotation.Component;
 import ekko.spring.v1.core.Annotation.ComponentScan;
 import ekko.spring.v1.core.AnnotationApplicationContext;
-import ekko.spring.v1.test.service.HelloService;
-import ekko.spring.v1.test.service.MyService;
-import ekko.spring.v1.test.service.NoAannotationService;
-import ekko.spring.v1.test.service.SingletonLazyService;
+import ekko.spring.v1.service.HelloService;
+import ekko.spring.v1.service.MyService;
+import ekko.spring.v1.service.NoAannotationService;
+import ekko.spring.v1.service.SingletonLazyService;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
@@ -18,10 +18,10 @@ import java.lang.reflect.InvocationTargetException;
  * @Date 2023/3/6 16:43
  * @PackageName:ekko.spirng.v1.test
  * @ClassName: AppConfig
- * @Description: TODO
+ * @Description: v1版本是基于了解spring的工作流程后进行的简易模仿,对v1版本进行简单的测试
  * @Version 1.0
  */
-@ComponentScan("ekko.spring.v1.test.service")
+@ComponentScan("ekko.spring.v1.service")
 //@Component("app") //只包含第一个属性可以不用指出key值
 public class Application {
     public static void main(String[] args) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
@@ -55,9 +55,16 @@ public class Application {
 
     }
 
-
+    /**
+    * @description:反射相关的知识
+    * @author yll
+    * @date 2023/3/9 22:42
+    * @param
+    *  args:
+    * @return void
+    */
     public static void t1(String[] args) throws ClassNotFoundException, InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
-        Class<?> testdemo1 = Class.forName("ekko.spring.v1.test.testdemo");
+        Class<?> testdemo1 = Class.forName("ekko.spring.v1.testdemo");
 
         Constructor<?> constructor = testdemo1.getConstructor(int.class);
         testdemo t = (testdemo)constructor.newInstance(2);

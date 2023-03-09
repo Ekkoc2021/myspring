@@ -1,6 +1,5 @@
 package ekko.spring.v1.core;
 
-import com.sun.xml.internal.bind.v2.TODO;
 import ekko.spring.v1.core.Annotation.Component;
 import ekko.spring.v1.core.Annotation.ComponentScan;
 import ekko.spring.v1.core.Annotation.Lazy;
@@ -15,7 +14,7 @@ import java.util.*;
  * @Date 2023/3/6 16:43
  * @PackageName:ekko.spirng.v1.core
  * @ClassName: AnnotationApplicationContext
- * @Description: 完成对
+ * @Description: 创建对象后初始化ioc容器
  * @Version 1.0
  */
 
@@ -26,7 +25,7 @@ public class AnnotationApplicationContext implements Context {
 
     public AnnotationApplicationContext(Class configClass) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
         this.configClass = configClass;
-        //扫描:class封装信息到beanDefinition对象,然后装beanDefinitionMap容器
+        //通过配置上的包扫描class:class封装信息到beanDefinition对象,然后装beanDefinitionMap容器
         scan(configClass);
 
         //创建对象: 从beanDefinitionMap中获取beanDefinition判断是否是单例,是就创建对象,放入单例池
@@ -55,15 +54,17 @@ public class AnnotationApplicationContext implements Context {
     private void scan(Class configClass) throws ClassNotFoundException {
         ComponentScan componentScan = null;
         //完成BeanDefinitionMap的封装
+        // TODO: 如果不包含该注解,或者注解上没有配置包名称,进行当前配置类所在的包进行扫描,这里还是只做简单处理,默认必须写有包名称
         if (configClass.isAnnotationPresent(ComponentScan.class)) {
-            //如果不包含该注解,应该
-            componentScan = (ComponentScan) configClass.getAnnotation(ComponentScan.class);
 
+            componentScan = (ComponentScan) configClass.getAnnotation(ComponentScan.class);
             //解析需要扫描的包
             String path = componentScan.value();
             path = path.replace(".", "/"); //URL里面要求的 '/' 而后面获取到的文件路径改为了 '\'
             ClassLoader classLoader = configClass.getClassLoader();
+            System.out.println(path);
             URL resource = classLoader.getResource(path);
+            System.out.println(resource);
             String filepath = resource.getFile(); //拿到扫描的包位置
             File file = new File(filepath);
 
@@ -139,6 +140,7 @@ public class AnnotationApplicationContext implements Context {
 
 
         }
+
     }
 
     /**
@@ -147,7 +149,7 @@ public class AnnotationApplicationContext implements Context {
     * @date 2023/3/9 21:35 
     * @param
     *  name: bean的名称
-    *  beanDefinition:  封装Componet信息的对象
+    *  beanDefinition:  封装bean的信息的对象
     * @return Object
     */
     private Object createBean(String name, BeanDefinition beanDefinition) throws InstantiationException, IllegalAccessException {
@@ -172,12 +174,11 @@ public class AnnotationApplicationContext implements Context {
     */
     @Override
     public Object getBean(String beanname) {
-        Object o = singletonObject.get(beanname);
-        if (o!=null) {
-            return o;
+        Object bean = singletonObject.get(beanname);
+        if (bean!=null) {
+            return bean;
         }
         BeanDefinition beanDefinition = beanDefinitionMap.get(beanname);
-        Object bean=null;
         try {
             if (beanDefinition!=null){
                 bean = createBean(beanname, beanDefinition);

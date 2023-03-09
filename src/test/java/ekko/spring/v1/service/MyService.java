@@ -1,4 +1,4 @@
-package ekko.spring.v1.test.service;
+package ekko.spring.v1.service;
 
 import ekko.spring.v1.core.Annotation.Component;
 
